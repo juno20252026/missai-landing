@@ -36,10 +36,20 @@
       font-weight: bold;
       color: #1a73e8;
     }
-    .relation {
+    .phonetic {
+      font-size: 16px;
+      color: #888;
+      margin-top: 4px;
+    }
+    .meta {
       font-size: 14px;
-      color: #666;
+      color: #d32f2f;
       margin: 4px 0;
+    }
+    .translation {
+      font-size: 15px;
+      color: #333;
+      margin: 6px 0;
     }
     .example {
       font-size: 16px;
@@ -60,6 +70,18 @@
       text-align: center;
       padding: 20px;
     }
+    .back-btn {
+      background: #f1f8ff;
+      border: 1px solid #1a73e8;
+      color: #1a73e8;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .back-btn:hover {
+      background: #e8f0fe;
+    }
   </style>
 </head>
 <body>
@@ -67,19 +89,19 @@
   <div id="output">加载中...</div>
 
   <script>
-    // 🔑 替换为你的 DashScope API Key（在 https://dashscope.console.aliyun.com/apiKey 获取）
-    const DASHSCOPE_API_KEY = "sk-4478d191a86b43c2a0eb87d6f5eb3e6e"; // ←←← 这里填你的 sk-xxx
+    // 🔑 替换为你的 DashScope API Key
+    const DASHSCOPE_API_KEY = "sk-4478d191a86b43c2a0eb87d6f5eb3e6e";
 
     // 🆔 替换为你的百炼应用 ID
     const APP_ID = "ec844d9106174bd1a830a21783982af8";
 
-    // 🌐 DashScope API 地址（推荐北京区域，CORS 支持更好）
+    // 🌐 DashScope API 地址
     const DASHSCOPE_URL = `https://dashscope.aliyuncs.com/api/v1/apps/${APP_ID}/completion`;
 
     let history = [];
 
     async function fetchWords(word = "") {
-      const displayWord = word || "innovation";
+      const displayWord = word || "《开始》";
       document.getElementById("output").innerHTML = `<div class="loading">正在探索 "${displayWord}"...</div>`;
       
       try {
@@ -90,13 +112,13 @@
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-              input: {
-                 messages: [
-                     { role: "user", content: displayWord }
-                 ]
-             },
+            input: {
+              messages: [
+                { role: "user", content: displayWord }
+              ]
+            },
             parameters: {}
-})
+          })
         });
 
         if (!response.ok) {
@@ -105,12 +127,11 @@
         }
 
         const data = await response.json();
-        
-        // 百炼返回的是 output.text 字符串，需解析为 JSON
         const result = JSON.parse(data.output.text.trim());
 
         render(result);
-        history.push(result.focus_word);
+        // 记录的是触发词（可能是《开始》或具体单词）
+        history.push(result.trigger_word);
       } catch (e) {
         console.error("请求失败:", e);
         document.getElementById("output").innerHTML = 
@@ -120,19 +141,23 @@
     }
 
     function render(data) {
-      let html = `<h3>当前词：<strong>${data.focus_word}</strong></h3>`;
+      let titleWord = data.trigger_word;
+      // 如果是《开始》，显示更友好的标题
+      const displayTitle = titleWord === "《开始》" ? "初始推荐词汇" : `"${titleWord}" 的相关词汇`;
+      let html = `<h3>📚 ${displayTitle}</h3>`;
       
       if (history.length > 1) {
-        html += `<p><button onclick="goBack()">← 返回上一级</button></p>`;
+        html += `<p><button class="back-btn" onclick="goBack()">← 返回上一级</button></p>`;
       }
 
-      data.related_words.forEach(item => {
-        // 转义单引号，防止 JS 注入错误
+      data.recommended_words.forEach(item => {
         const safeWord = item.word.replace(/'/g, "\\'");
         html += `
           <div class="card" onclick="fetchWords('${safeWord}')">
             <div class="word">${item.word}</div>
-            <div class="relation">[${item.relation_type}]</div>
+            <div class="phonetic">${item.phonetic}</div>
+            <div class="meta">[${item.level}]</div>
+            <div class="translation">${item.translation}</div>
             <div class="example">${item.examples[0].en}<br><span class="zh">${item.examples[0].zh}</span></div>
             <div class="example">${item.examples[1].en}<br><span class="zh">${item.examples[1].zh}</span></div>
           </div>
@@ -147,13 +172,13 @@
     }
 
     function goBack() {
-      history.pop();
-      const prev = history[history.length - 1] || "";
+      history.pop(); // 移除当前
+      const prev = history[history.length - 1] || "《开始》";
       fetchWords(prev);
     }
 
-    // 首次加载
-    fetchWords();
+    // 首次加载：发送《开始》指令
+    fetchWords("《开始》");
   </script>
 </body>
 </html>
