@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WordWeaver - 词汇探索</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 16px;
+      background: #fafafa;
+      color: #333;
+    }
+    h2 {
+      text-align: center;
+      margin: 20px 0;
+      color: #1a73e8;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin: 12px 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .word {
+      font-size: 20px;
+      font-weight: bold;
+      color: #1a73e8;
+    }
+    .relation {
+      font-size: 14px;
+      color: #666;
+      margin: 4px 0;
+    }
+    .example {
+      font-size: 16px;
+      margin: 6px 0;
+      line-height: 1.5;
+    }
+    .zh {
+      color: #555;
+      font-style: italic;
+    }
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #999;
+    }
+    .error {
+      color: red;
+      text-align: center;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h2>🌟 WordWeaver</h2>
+  <div id="output">加载中...</div>
+
+  <script>
+    // 🔑 替换为你的 DashScope API Key（在 https://dashscope.console.aliyun.com/apiKey 获取）
+    const DASHSCOPE_API_KEY = "sk-4478d191a86b43c2a0eb87d6f5eb3e6e"; // ←←← 这里填你的 sk-xxx
+
+    // 🆔 替换为你的百炼应用 ID
+    const APP_ID = "ec844d9106174bd1a830a21783982af8";
+
+    // 🌐 DashScope API 地址（推荐北京区域，CORS 支持更好）
+    const DASHSCOPE_URL = `https://dashscope.aliyuncs.com/api/v1/apps/${APP_ID}/completion`;
+
+    let history = [];
+
+    async function fetchWords(word = "") {
+      const displayWord = word || "innovation";
+      document.getElementById("output").innerHTML = `<div class="loading">正在探索 "${displayWord}"...</div>`;
+      
+      try {
+        const response = await fetch(DASHSCOPE_URL, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${DASHSCOPE_API_KEY}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+              input: {
+                 messages: [
+                     { role: "user", content: displayWord }
+                 ]
+             },
+            parameters: {}
+})
+        });
+
+        if (!response.ok) {
+          const errText = await response.text();
+          throw new Error(`HTTP ${response.status}: ${errText}`);
+        }
+
+        const data = await response.json();
+        
+        // 百炼返回的是 output.text 字符串，需解析为 JSON
+        const result = JSON.parse(data.output.text.trim());
+
+        render(result);
+        history.push(result.focus_word);
+      } catch (e) {
+        console.error("请求失败:", e);
+        document.getElementById("output").innerHTML = 
+          `<div class="error">出错了：<br>${e.message || '未知错误'}</div>` +
+          `<p style="text-align:center"><button onclick="fetchWords('${displayWord}')">重试</button></p>`;
+      }
+    }
+
+    function render(data) {
+      let html = `<h3>当前词：<strong>${data.focus_word}</strong></h3>`;
+      
+      if (history.length > 1) {
+        html += `<p><button onclick="goBack()">← 返回上一级</button></p>`;
+      }
+
+      data.related_words.forEach(item => {
+        // 转义单引号，防止 JS 注入错误
+        const safeWord = item.word.replace(/'/g, "\\'");
+        html += `
+          <div class="card" onclick="fetchWords('${safeWord}')">
+            <div class="word">${item.word}</div>
+            <div class="relation">[${item.relation_type}]</div>
+            <div class="example">${item.examples[0].en}<br><span class="zh">${item.examples[0].zh}</span></div>
+            <div class="example">${item.examples[1].en}<br><span class="zh">${item.examples[1].zh}</span></div>
+          </div>
+        `;
+      });
+
+      html += `<p style="text-align:center; margin-top:30px; color:#888;">
+        Made with ❤️ | 点击任意单词继续探索
+      </p>`;
+      
+      document.getElementById("output").innerHTML = html;
+    }
+
+    function goBack() {
+      history.pop();
+      const prev = history[history.length - 1] || "";
+      fetchWords(prev);
+    }
+
+    // 首次加载
+    fetchWords();
+  </script>
+</body>
+</html>
