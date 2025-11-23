@@ -211,7 +211,7 @@
           const safeEn = ex.en.replace(/'/g, "\\'").replace(/"/g, '&quot;');
           html += `<p class="example">
             ${ex.en} 
-            <button class="speak-btn" title="朗读例句" onclick="speakText('${safeEn}', 'en-US')">🔊</button>
+            
             <br><span class="zh">${ex.zh}</span>
           </p>`;
         });
@@ -257,3 +257,4 @@
   </script>
 </body>
 </html>
+
