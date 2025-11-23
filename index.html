@@ -84,6 +84,22 @@
       color: #555;
       font-style: italic;
     }
+    .speak-btn {
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      color: #1a73e8;
+      padding: 2px 4px;
+      margin-left: 6px;
+      vertical-align: middle;
+      border-radius: 4px;
+      outline: none;
+    }
+    .speak-btn:hover {
+      background: #f0f8ff;
+      color: #0d47a1;
+    }
   </style>
 </head>
 <body>
@@ -105,8 +121,21 @@
     // 历史栈：用于返回
     const historyStack = [];
 
+    // 🔊 语音朗读函数
+    function speakText(text, lang = 'en-US') {
+      if ('speechSynthesis' in window) {
+        speechSynthesis.cancel(); // 停止正在播放的语音
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = lang;
+        utterance.rate = 1.0;
+        utterance.pitch = 1.0;
+        speechSynthesis.speak(utterance);
+      } else {
+        alert('您的浏览器不支持语音朗读功能。');
+      }
+    }
+
     async function fetchWords(word = "") {
-      // 构造带历史的输入
       const historyList = Array.from(seenWords).filter(w => w !== word);
       const historyStr = historyList.length > 0 ? historyList.join(", ") : "无";
       const actualInput = word === "《开始》"
@@ -139,11 +168,8 @@
         const data = await response.json();
         const result = JSON.parse(data.output.text.trim());
 
-        // 更新全局 seenWords
         if (result.detail) seenWords.add(result.detail.word);
         result.words.forEach(w => seenWords.add(w.word));
-
-        // 记录历史（用于返回）
         historyStack.push({ trigger: word || "《开始》", data: result });
 
         render(result);
@@ -168,15 +194,26 @@
         html += `</div>`;
       } else {
         const d = data.detail;
+        // 转义特殊字符防止 JS 注入
+        const safeWord = d.word.replace(/'/g, "\\'");
+        const safePhonetic = d.phonetic || '';
+        
         html += `<h3>📖 词汇详情：<strong>${d.word}</strong></h3>`;
-        html += `<p><strong>音标：</strong>${d.phonetic}</p>`;
+        html += `<p><strong>音标：</strong>${safePhonetic} 
+          <button class="speak-btn" title="朗读单词" onclick="speakText('${safeWord}', 'en-US')">🔊</button>
+        </p>`;
         html += `<p><strong>词根构成：</strong>${d.root_analysis}</p>`;
         html += `<p><strong>英文释义：</strong>${d.translation_en}</p>`;
         html += `<p><strong>中文翻译：</strong>${d.translation_zh} <em>[${d.level}]</em></p>`;
         
         html += `<div class="section-title">📘 例句</div>`;
         d.examples.forEach(ex => {
-          html += `<p class="example">${ex.en}<br><span class="zh">${ex.zh}</span></p>`;
+          const safeEn = ex.en.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+          html += `<p class="example">
+            ${ex.en} 
+            <button class="speak-btn" title="朗读例句" onclick="speakText('${safeEn}', 'en-US')">🔊</button>
+            <br><span class="zh">${ex.zh}</span>
+          </p>`;
         });
 
         html += `<div class="section-title">🔗 相关推荐</div>`;
@@ -188,7 +225,6 @@
         html += `</div>`;
       }
 
-      // 返回按钮
       if (historyStack.length > 1) {
         html += `<p style="text-align:center;"><button class="back-btn" onclick="goBack()">← 返回上一级</button></p>`;
       }
@@ -202,10 +238,9 @@
 
     function goBack() {
       if (historyStack.length > 1) {
-        historyStack.pop(); // 移除当前页
+        historyStack.pop();
         const prev = historyStack[historyStack.length - 1];
         
-        // 恢复 seenWords 到上一状态（简化处理：重新构建）
         seenWords.clear();
         for (let i = 0; i < historyStack.length; i++) {
           const entry = historyStack[i];
