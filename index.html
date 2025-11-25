@@ -3,258 +3,122 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>WordWeaver - 词汇探索</title>
+  <title>WordWeaver</title>
   <style>
     body {
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 16px;
-      background: #fafafa;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 0 20px;
+      background-color: #f9f9f9;
       color: #333;
     }
-    h2 {
+    h1 {
       text-align: center;
-      margin: 20px 0;
-      color: #1a73e8;
+      color: #2c3e50;
     }
-    .card {
-      background: white;
-      border-radius: 12px;
-      padding: 16px;
-      margin: 12px 0;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    .word-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin: 20px 0;
-    }
-    .word-btn {
-      padding: 14px 8px;
+    button {
+      display: block;
+      width: 200px;
+      margin: 20px auto;
+      padding: 12px;
       font-size: 16px;
-      font-weight: bold;
+      background-color: #3498db;
+      color: white;
       border: none;
-      border-radius: 10px;
-      background: #e8f0fe;
-      color: #1a73e8;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-align: center;
-    }
-    .word-btn:hover {
-      background: #d0e4ff;
-      transform: scale(1.03);
-    }
-    .back-btn {
-      background: #f1f8ff;
-      border: 1px solid #1a73e8;
-      color: #1a73e8;
-      padding: 8px 16px;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 14px;
-      margin-top: 10px;
+      transition: background 0.3s;
     }
-    .back-btn:hover {
-      background: #e8f0fe;
+    button:hover {
+      background-color: #2980b9;
+    }
+    button:disabled {
+      background-color: #bdc3c7;
+      cursor: not-allowed;
+    }
+    .words {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .word-card {
+      background: white;
+      padding: 16px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      text-align: center;
+      font-weight: bold;
+      transition: transform 0.2s;
+    }
+    .word-card:hover {
+      transform: translateY(-2px);
     }
     .loading {
       text-align: center;
-      padding: 30px;
-      color: #999;
+      color: #7f8c8d;
     }
     .error {
-      color: red;
+      color: #e74c3c;
       text-align: center;
-      padding: 20px;
-    }
-    .section-title {
-      margin-top: 24px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #eee;
-      color: #1a73e8;
-    }
-    .example {
-      margin: 8px 0;
-      line-height: 1.5;
-    }
-    .zh {
-      color: #555;
-      font-style: italic;
-    }
-    .speak-btn {
-      background: none;
-      border: none;
-      font-size: 18px;
-      cursor: pointer;
-      color: #1a73e8;
-      padding: 2px 4px;
-      margin-left: 6px;
-      vertical-align: middle;
-      border-radius: 4px;
-      outline: none;
-    }
-    .speak-btn:hover {
-      background: #f0f8ff;
-      color: #0d47a1;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <h2>🌟 WordWeaver</h2>
-  <div id="output">加载中...</div>
+  <h1>✨ WordWeaver</h1>
+  <button id="startBtn">开始游戏</button>
+  <div id="loading" class="loading" style="display:none;">加载中...</div>
+  <div id="error" class="error"></div>
+  <div id="words" class="words"></div>
 
   <script>
-    // 🔑 替换为你的 DashScope API Key
-    const DASHSCOPE_API_KEY = "sk-4478d191a86b43c2a0eb87d6f5eb3e6e";
+    // 替换为你的 FC 函数地址
+    const FC_URL = "https://bailian-proxy-hfumncjkvt.cn-shenzhen.fcapp.run";
 
-    // 🆔 替换为你的百炼应用 ID
-    const APP_ID = "ec844d9106174bd1a830a21783982af8";
+    const startBtn = document.getElementById("startBtn");
+    const loadingEl = document.getElementById("loading");
+    const errorEl = document.getElementById("error");
+    const wordsEl = document.getElementById("words");
 
-    const DASHSCOPE_URL = `https://dashscope.aliyuncs.com/api/v1/apps/${APP_ID}/completion`;
-
-    // 全局记录所有已出现过的单词（用于去重）
-    const seenWords = new Set();
-
-    // 历史栈：用于返回
-    const historyStack = [];
-
-    // 🔊 语音朗读函数
-    function speakText(text, lang = 'en-US') {
-      if ('speechSynthesis' in window) {
-        speechSynthesis.cancel(); // 停止正在播放的语音
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = lang;
-        utterance.rate = 1.0;
-        utterance.pitch = 1.0;
-        speechSynthesis.speak(utterance);
-      } else {
-        alert('您的浏览器不支持语音朗读功能。');
-      }
-    }
-
-    async function fetchWords(word = "") {
-      const historyList = Array.from(seenWords).filter(w => w !== word);
-      const historyStr = historyList.length > 0 ? historyList.join(", ") : "无";
-      const actualInput = word === "《开始》"
-        ? `《开始》\n已探索词汇：${historyStr}`
-        : `${word}\n已探索词汇：${historyStr}`;
-
-      document.getElementById("output").innerHTML = 
-        `<div class="loading">正在探索 "${word || '初始词汇'}"...</div>`;
+    startBtn.addEventListener("click", async () => {
+      startBtn.disabled = true;
+      loadingEl.style.display = "block";
+      errorEl.textContent = "";
+      wordsEl.innerHTML = "";
 
       try {
-        const response = await fetch(DASHSCOPE_URL, {
+        const response = await fetch(FC_URL, {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${DASHSCOPE_API_KEY}`,
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            input: {
-              messages: [{ role: "user", content: actualInput }]
-            },
-            parameters: {}
+            input: "开始",
+            history_words: []
           })
         });
 
-        if (!response.ok) {
-          const errText = await response.text();
-          throw new Error(`HTTP ${response.status}: ${errText.substring(0, 200)}`);
-        }
-
         const data = await response.json();
-        const result = JSON.parse(data.output.text.trim());
 
-        if (result.detail) seenWords.add(result.detail.word);
-        result.words.forEach(w => seenWords.add(w.word));
-        historyStack.push({ trigger: word || "《开始》", data: result });
-
-        render(result);
-      } catch (e) {
-        console.error("请求失败:", e);
-        document.getElementById("output").innerHTML = 
-          `<div class="error">出错了：<br>${e.message || '未知错误'}</div>` +
-          `<p style="text-align:center"><button class="back-btn" onclick="location.reload()">刷新重试</button></p>`;
-      }
-    }
-
-    function render(data) {
-      let html = '';
-
-      if (data.type === "initial") {
-        html += `<h3>📚 初始推荐词汇</h3>`;
-        html += `<div class="word-grid">`;
-        data.words.forEach(item => {
-          const safe = item.word.replace(/'/g, "\\'");
-          html += `<button class="word-btn" onclick="fetchWords('${safe}')">${item.word}</button>`;
-        });
-        html += `</div>`;
-      } else {
-        const d = data.detail;
-        // 转义特殊字符防止 JS 注入
-        const safeWord = d.word.replace(/'/g, "\\'");
-        const safePhonetic = d.phonetic || '';
-        
-        html += `<h3>📖 词汇详情：<strong>${d.word}</strong></h3>`;
-        html += `<p><strong>音标：</strong>${safePhonetic} 
-          <button class="speak-btn" title="朗读单词" onclick="speakText('${safeWord}', 'en-US')">🔊</button>
-        </p>`;
-        html += `<p><strong>词根构成：</strong>${d.root_analysis}</p>`;
-        html += `<p><strong>英文释义：</strong>${d.translation_en}</p>`;
-        html += `<p><strong>中文翻译：</strong>${d.translation_zh} <em>[${d.level}]</em></p>`;
-        
-        html += `<div class="section-title">📘 例句</div>`;
-        d.examples.forEach(ex => {
-          const safeEn = ex.en.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-          html += `<p class="example">
-            ${ex.en} 
-            
-            <br><span class="zh">${ex.zh}</span>
-          </p>`;
-        });
-
-        html += `<div class="section-title">🔗 相关推荐</div>`;
-        html += `<div class="word-grid">`;
-        data.words.forEach(item => {
-          const safe = item.word.replace(/'/g, "\\'");
-          html += `<button class="word-btn" onclick="fetchWords('${safe}')">${item.word}</button>`;
-        });
-        html += `</div>`;
-      }
-
-      if (historyStack.length > 1) {
-        html += `<p style="text-align:center;"><button class="back-btn" onclick="goBack()">← 返回上一级</button></p>`;
-      }
-
-      html += `<p style="text-align:center; margin-top:30px; color:#888;">
-        Made with ❤️ | 点击任意单词继续探索
-      </p>`;
-
-      document.getElementById("output").innerHTML = html;
-    }
-
-    function goBack() {
-      if (historyStack.length > 1) {
-        historyStack.pop();
-        const prev = historyStack[historyStack.length - 1];
-        
-        seenWords.clear();
-        for (let i = 0; i < historyStack.length; i++) {
-          const entry = historyStack[i];
-          if (entry.data.detail) seenWords.add(entry.data.detail.word);
-          entry.data.words.forEach(w => seenWords.add(w.word));
+        if (!response.ok) {
+          throw new Error(data.error || "请求失败");
         }
 
-        render(prev.data);
-      }
-    }
+        // 渲染单词
+        wordsEl.innerHTML = data.words.map(w =>
+          `<div class="word-card">${w.word}</div>`
+        ).join("");
 
-    // 首次加载
-    fetchWords("《开始》");
+      } catch (err) {
+        console.error("Error:", err);
+        errorEl.textContent = "❌ " + (err.message || "网络错误，请重试");
+      } finally {
+        loadingEl.style.display = "none";
+        startBtn.disabled = false;
+      }
+    });
   </script>
 </body>
 </html>
-
