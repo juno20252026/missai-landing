@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- 主页 -->
+  <!-- 首页 -->
   <url>
     <loc>https://www.missai.online</loc>
     <lastmod>2026-01-20</lastmod>
@@ -8,91 +8,61 @@
     <priority>1.0</priority>
   </url>
 
-  <!-- Chat with Miss AI -->
+  <!-- 产品介绍页 -->
   <url>
-    <loc>https://www.missai.online/chat</loc>
-    <lastmod>2026-01-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <!-- Language Tools -->
-  <url>
-    <loc>https://www.missai.online/tools</loc>
-    <lastmod>2026-01-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- Decoding Hanzi -->
-  <url>
-    <loc>https://www.missai.online/tools/decoding-hanzi</loc>
-    <lastmod>2026-01-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- Blocks to Blocks -->
-  <url>
-    <loc>https://www.missai.online/tools/blocks-to-blocks</loc>
-    <lastmod>2026-01-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- Pinyin Practice -->
-  <url>
-    <loc>https://www.missai.online/tools/pinyin-practice</loc>
-    <lastmod>2026-01-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- Natural Phrases -->
-  <url>
-    <loc>https://www.missai.online/tools/natural-phrases</loc>
-    <lastmod>2026-01-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- Think in Chinese -->
-  <url>
-    <loc>https://www.missai.online/tools/think-in-chinese</loc>
-    <lastmod>2026-01-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- Pocket Translator -->
-  <url>
-    <loc>https://www.missai.online/translator</loc>
-    <lastmod>2026-01-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- Pricing / Subscribe Page -->
-  <url>
-    <loc>https://www.missai.online/pricing</loc>
+    <loc>https://www.missai.online/intro</loc>
     <lastmod>2026-01-20</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.8</priority>
   </url>
 
-  <!-- Privacy Policy -->
+  <!-- 学习功能页：Note for Set -->
   <url>
-    <loc>https://www.missai.online/privacy-policy</loc>
+    <loc>https://www.missai.online/note4set</loc>
+    <lastmod>2026-01-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- 学习功能页：Sentence Level -->
+  <url>
+    <loc>https://www.missai.online/selevel</loc>
+    <lastmod>2026-01-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- 学习功能页：Set Topic -->
+  <url>
+    <loc>https://www.missai.online/setopic</loc>
+    <lastmod>2026-01-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- 学习功能页：Pronoun Practice -->
+  <url>
+    <loc>https://www.missai.online/pronoun</loc>
+    <lastmod>2026-01-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- 学习功能页：Sentence Training -->
+  <url>
+    <loc>https://www.missai.online/sentencetrain</loc>
+    <lastmod>2026-01-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+
+  <!-- 隐私政策和服务条款（法律要求，必须公开） -->
+  <url>
+    <loc>https://www.missai.online/pp</loc>
     <lastmod>2026-01-20</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
 
-  <!-- Terms of Service -->
-  <url>
-    <loc>https://www.missai.online/terms-of-service</loc>
-    <lastmod>2026-01-20</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.5</priority>
-  </url>
 </urlset>
