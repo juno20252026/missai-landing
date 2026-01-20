@@ -1,259 +1,180 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>WordWeaver - 词汇探索</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Primary SEO Meta Tags -->
+  <title>Chat With Miss AI in Chinese | Free & Paid Mandarin Learning Tools</title>
+  <meta name="description" content="Learn Chinese with Miss AI: free tools for Hanzi, Pinyin, and phrases. Chat & translate with voice (pay-as-you-go). Subscribe for advanced features like 'Think in Chinese'." />
+  <meta name="keywords" content="learn Chinese, AI language tutor, Mandarin practice, Chinese characters, Pinyin, voice chat, Miss AI, free Chinese learning" />
+
+  <!-- Open Graph / Social Media -->
+  <meta property="og:title" content="Chat With Miss AI in Chinese" />
+  <meta property="og:description" content="Free Hanzi & Pinyin tools. Voice chat & translation by the minute. Advanced features with subscription. Start learning now!" />
+  <meta property="og:url" content="https://juno20252026.github.io/missai-landing/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://juno20252026.github.io/missai-landing/og-missai.jpg" />
+  <meta property="og:site_name" content="Miss AI" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Miss AI: Learn Chinese with AI" />
+  <meta name="twitter:description" content="Free tools + voice chat by the minute. No hidden fees. Register now for 30 minutes free!" />
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://img.alicdn.com/imgextra/i3/O1CN01o0XuNk1DvpTkBMI8q_!!6000000000279-73-tps-32-32.ico" type="image/x-icon" />
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://juno20252026.github.io/missai-landing/" />
+
   <style>
+    :root {
+      --primary: #1890ff;
+      --dark: #2a313d;
+      --light-gray: #f9fbfd;
+      --gray: #666;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: var(--dark);
+      background: white;
+    }
+    .container {
       max-width: 800px;
       margin: 0 auto;
-      padding: 16px;
-      background: #fafafa;
-      color: #333;
+      padding: 2rem 1.5rem;
     }
-    h2 {
+    header {
       text-align: center;
-      margin: 20px 0;
-      color: #1a73e8;
+      margin-bottom: 2.5rem;
     }
-    .card {
-      background: white;
-      border-radius: 12px;
-      padding: 16px;
-      margin: 12px 0;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    h1 {
+      font-size: 2.3rem;
+      margin-bottom: 1rem;
+      color: var(--dark);
     }
-    .word-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin: 20px 0;
-    }
-    .word-btn {
-      padding: 14px 8px;
-      font-size: 16px;
-      font-weight: bold;
-      border: none;
-      border-radius: 10px;
-      background: #e8f0fe;
-      color: #1a73e8;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-align: center;
-    }
-    .word-btn:hover {
-      background: #d0e4ff;
-      transform: scale(1.03);
-    }
-    .back-btn {
-      background: #f1f8ff;
-      border: 1px solid #1a73e8;
-      color: #1a73e8;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-      margin-top: 10px;
-    }
-    .back-btn:hover {
-      background: #e8f0fe;
-    }
-    .loading {
-      text-align: center;
-      padding: 30px;
-      color: #999;
-    }
-    .error {
-      color: red;
-      text-align: center;
-      padding: 20px;
-    }
-    .section-title {
-      margin-top: 24px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #eee;
-      color: #1a73e8;
-    }
-    .example {
-      margin: 8px 0;
-      line-height: 1.5;
-    }
-    .zh {
+    .subtitle {
+      font-size: 1.2rem;
       color: #555;
-      font-style: italic;
+      max-width: 650px;
+      margin: 0 auto 1.8rem;
     }
-    .speak-btn {
-      background: none;
-      border: none;
-      font-size: 18px;
-      cursor: pointer;
-      color: #1a73e8;
-      padding: 2px 4px;
-      margin-left: 6px;
-      vertical-align: middle;
-      border-radius: 4px;
-      outline: none;
+    .btn {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      padding: 0.9rem 2.2rem;
+      font-size: 1.1rem;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: background 0.3s;
     }
-    .speak-btn:hover {
-      background: #f0f8ff;
-      color: #0d47a1;
+    .btn:hover { background: #40a9ff; }
+
+    .section { margin: 2.5rem 0; }
+    h2 {
+      font-size: 1.6rem;
+      margin-bottom: 1.2rem;
+      color: var(--dark);
+    }
+    ul { padding-left: 1.5rem; margin: 0.8rem 0; }
+    li { margin-bottom: 0.4rem; }
+
+    .pricing-card {
+      background: var(--light-gray);
+      padding: 1.4rem;
+      border-radius: 10px;
+      margin: 1.2rem 0;
+    }
+    .highlight { color: var(--primary); font-weight: 600; }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      color: var(--gray);
+      font-size: 0.95rem;
+    }
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 1.9rem; }
+      .subtitle { font-size: 1.05rem; }
+      .btn { padding: 0.8rem 1.8rem; }
     }
   </style>
 </head>
 <body>
-  <h2>🌟 WordWeaver</h2>
-  <div id="output">加载中...</div>
+  <div class="container">
+    <header>
+      <h1>Chat With Miss AI in Chinese</h1>
+      <p class="subtitle">An AI-powered tool for Chinese learners — free core features, voice by the minute, advanced tools with subscription.</p>
+      <a href="https://www.missai.online/intro" class="btn" rel="noopener">Start Learning Now →</a>
+    </header>
 
-  <script>
-    // 🔑 替换为你的 DashScope API Key
-    const DASHSCOPE_API_KEY = "sk-4478d191a86b43c2a0eb87d6f5eb3e6e";
+    <main>
+      <section class="section">
+        <h2>✨ What’s Free for Everyone</h2>
+        <p>All registered users get these tools at no cost:</p>
+        <ul>
+          <li><strong>Decoding Hanzi</strong> – Explore how characters are built from radicals and sounds</li>
+          <li><strong>Pinyin Practice</strong> – Build syllables step-by-step and hear them spoken</li>
+          <li><strong>Natural Phrases</strong> – Learn real-life expressions with audio playback</li>
+        </ul>
+        <p class="highlight">✅ Registration is completely free — and you’ll receive <strong>30 minutes of free Voice Time</strong> to try voice features!</p>
+      </section>
 
-    // 🆔 替换为你的百炼应用 ID
-    const APP_ID = "ec844d9106174bd1a830a21783982af8";
+      <section class="section">
+        <h2>🎤 Voice Features (Pay-as-you-go)</h2>
+        <p>Use your voice to interact with Miss AI:</p>
+        <ul>
+          <li><strong>Chat with Miss AI</strong> – Speak naturally in Chinese and get AI responses</li>
+          <li><strong>Pocket Translator</strong> – Translate spoken phrases instantly</li>
+        </ul>
+        <p>Voice Time is deducted as you speak. You can purchase more anytime:</p>
+        <div class="pricing-card">
+          <ul>
+            <li>$2.99 for 1 hour</li>
+            <li>$13.99 for 5 hours (≈$2.80/hour)</li>
+            <li>$24.99 for 10 hours (≈$2.50/hour)</li>
+            <li>$59.99 for 30 hours (≈$2.00/hour) — Best Value!</li>
+          </ul>
+        </div>
+      </section>
 
-    const DASHSCOPE_URL = `https://dashscope.aliyuncs.com/api/v1/apps/${APP_ID}/completion`;
+      <section class="section">
+        <h2>💎 VIP Subscription – $9.99/month</h2>
+        <p>Unlock advanced learning methods designed for deeper fluency:</p>
+        <ul>
+          <li><strong>Blocks to Blocks</strong> – Visual sentence construction</li>
+          <li><strong>Think in Chinese</strong> – Learn Chinese thought patterns, not just translation</li>
+        </ul>
+        <p class="highlight">🌟 Subscribers also get <strong>3 extra hours of Voice Time</strong> every month!</p>
+      </section>
 
-    // 全局记录所有已出现过的单词（用于去重）
-    const seenWords = new Set();
+      <section class="section">
+        <h2>ℹ️ Important Notes</h2>
+        <ul>
+          <li>This is an AI-generated learning tool — not an official course or certification program.</li>
+          <li>All content is for personal learning only.</li>
+          <li>No credit card required to register or use free features.</li>
+        </ul>
+      </section>
+    </main>
 
-    // 历史栈：用于返回
-    const historyStack = [];
-
-    // 🔊 语音朗读函数
-    function speakText(text, lang = 'en-US') {
-      if ('speechSynthesis' in window) {
-        speechSynthesis.cancel(); // 停止正在播放的语音
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = lang;
-        utterance.rate = 1.0;
-        utterance.pitch = 1.0;
-        speechSynthesis.speak(utterance);
-      } else {
-        alert('您的浏览器不支持语音朗读功能。');
-      }
-    }
-
-    async function fetchWords(word = "") {
-      const historyList = Array.from(seenWords).filter(w => w !== word);
-      const historyStr = historyList.length > 0 ? historyList.join(", ") : "无";
-      const actualInput = word === "《开始》"
-        ? `《开始》\n已探索词汇：${historyStr}`
-        : `${word}\n已探索词汇：${historyStr}`;
-
-      document.getElementById("output").innerHTML = 
-        `<div class="loading">正在探索 "${word || '初始词汇'}"...</div>`;
-
-      try {
-        const response = await fetch(DASHSCOPE_URL, {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${DASHSCOPE_API_KEY}`,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            input: {
-              messages: [{ role: "user", content: actualInput }]
-            },
-            parameters: {}
-          })
-        });
-
-        if (!response.ok) {
-          const errText = await response.text();
-          throw new Error(`HTTP ${response.status}: ${errText.substring(0, 200)}`);
-        }
-
-        const data = await response.json();
-        const result = JSON.parse(data.output.text.trim());
-
-        if (result.detail) seenWords.add(result.detail.word);
-        result.words.forEach(w => seenWords.add(w.word));
-        historyStack.push({ trigger: word || "《开始》", data: result });
-
-        render(result);
-      } catch (e) {
-        console.error("请求失败:", e);
-        document.getElementById("output").innerHTML = 
-          `<div class="error">出错了：<br>${e.message || '未知错误'}</div>` +
-          `<p style="text-align:center"><button class="back-btn" onclick="location.reload()">刷新重试</button></p>`;
-      }
-    }
-
-    function render(data) {
-      let html = '';
-
-      if (data.type === "initial") {
-        html += `<h3>📚 初始推荐词汇</h3>`;
-        html += `<div class="word-grid">`;
-        data.words.forEach(item => {
-          const safe = item.word.replace(/'/g, "\\'");
-          html += `<button class="word-btn" onclick="fetchWords('${safe}')">${item.word}</button>`;
-        });
-        html += `</div>`;
-      } else {
-        const d = data.detail;
-        // 转义特殊字符防止 JS 注入
-        const safeWord = d.word.replace(/'/g, "\\'");
-        const safePhonetic = d.phonetic || '';
-        
-        html += `<h3>📖 词汇详情：<strong>${d.word}</strong></h3>`;
-        html += `<p><strong>音标：</strong>${safePhonetic} 
-          <button class="speak-btn" title="朗读单词" onclick="speakText('${safeWord}', 'en-US')">🔊</button>
-        </p>`;
-        html += `<p><strong>词根构成：</strong>${d.root_analysis}</p>`;
-        html += `<p><strong>英文释义：</strong>${d.translation_en}</p>`;
-        html += `<p><strong>中文翻译：</strong>${d.translation_zh} <em>[${d.level}]</em></p>`;
-        
-        html += `<div class="section-title">📘 例句</div>`;
-        d.examples.forEach(ex => {
-          const safeEn = ex.en.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-          html += `<p class="example">
-            ${ex.en} 
-            <button class="speak-btn" title="朗读例句" onclick="speakText('${safeEn}', 'en-US')">🔊</button>
-            <br><span class="zh">${ex.zh}</span>
-          </p>`;
-        });
-
-        html += `<div class="section-title">🔗 相关推荐</div>`;
-        html += `<div class="word-grid">`;
-        data.words.forEach(item => {
-          const safe = item.word.replace(/'/g, "\\'");
-          html += `<button class="word-btn" onclick="fetchWords('${safe}')">${item.word}</button>`;
-        });
-        html += `</div>`;
-      }
-
-      if (historyStack.length > 1) {
-        html += `<p style="text-align:center;"><button class="back-btn" onclick="goBack()">← 返回上一级</button></p>`;
-      }
-
-      html += `<p style="text-align:center; margin-top:30px; color:#888;">
-        Made with ❤️ | 点击任意单词继续探索
-      </p>`;
-
-      document.getElementById("output").innerHTML = html;
-    }
-
-    function goBack() {
-      if (historyStack.length > 1) {
-        historyStack.pop();
-        const prev = historyStack[historyStack.length - 1];
-        
-        seenWords.clear();
-        for (let i = 0; i < historyStack.length; i++) {
-          const entry = historyStack[i];
-          if (entry.data.detail) seenWords.add(entry.data.detail.word);
-          entry.data.words.forEach(w => seenWords.add(w.word));
-        }
-
-        render(prev.data);
-      }
-    }
-
-    // 首次加载
-    fetchWords("《开始》");
-  </script>
+    <footer>
+      <p>
+        © 2026 Miss AI. All rights reserved.<br>
+        <a href="https://www.missai.online/privacy-policy" target="_blank" rel="noopener">Privacy Policy</a> |
+        <a href="https://www.missai.online/terms-of-service" target="_blank" rel="noopener">Terms of Service</a>
+      </p>
+    </footer>
+  </div>
 </body>
 </html>
