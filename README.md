@@ -1,6 +1,6 @@
 # Miss AI Landing Page
 
-This is the **official landing page for Miss AI**, an AI-powered Chinese language learning tool.
+This is the **official landing page for missai.online**, an AI-powered Chinese language learning tool.
 
 👉 [Visit Miss AI →](https://www.missai.online)
 
